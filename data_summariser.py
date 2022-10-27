@@ -10,7 +10,7 @@ import os
 # output_directory = (
 #     "formatted_csv"  # Which folder do you want to export the formatted csv to?
 # )
-date_format = "%d/%m/%y"
+date_format = "%d/%m/%Y"
 
 # ------------------
 # os.chdir(input_directory)
@@ -33,7 +33,7 @@ def obtaining_person_identity():
     return subject_name_and_code
 
 
-def obtaining_dataframe(filename):
+def obtaining_dataframe(filenames):
     """Obtain the summary statistics for the actigraphy
     input: CSV
     output: Pandas dataframe containing all stats for REST interval
@@ -43,36 +43,44 @@ def obtaining_dataframe(filename):
     searching_marker_header = re.compile(r"-+\s?Marker/Score List\s?-+")
     row_lower_limit = 1
     row_upper_limit = 1
-    with open(filename) as csv_file:
+    if len(filenames) == 0:
+        print("ERROR: You need to make sure that you provide at least one file!")
+        return
+    else:
+        data_frames = []
+        for filename in filenames:
+            with open(filename) as csv_file:
 
-        csv_reader = csv.reader(csv_file)
-        for item in csv_reader:
-            if (
-                not re.search(searching_statistics_header, str(item))
-                and row_upper_limit <= row_lower_limit
-            ):
-                row_lower_limit += 1
-                row_upper_limit += 1
-            elif not re.search(searching_marker_header, str(item)):
-                row_upper_limit += 1
-            elif re.search(searching_marker_header, str(item)):
-                break
-    df = pd.read_csv(
-        filename,
-        skiprows=row_lower_limit + 1,
-    )
-    pd.set_option("display.max_columns", None)
-    df.drop(list(df)[18:], axis=1, inplace=True)
+                csv_reader = csv.reader(csv_file)
+                for item in csv_reader:
+                    if (
+                        not re.search(searching_statistics_header, str(item))
+                        and row_upper_limit <= row_lower_limit
+                    ):
+                        row_lower_limit += 1
+                        row_upper_limit += 1
+                    elif not re.search(searching_marker_header, str(item)):
+                        row_upper_limit += 1
+                    elif re.search(searching_marker_header, str(item)):
+                        break
+            df = pd.read_csv(
+                filename,
+                skiprows=row_lower_limit + 1,
+            )
+            pd.set_option("display.max_columns", None)
+            df.drop(list(df)[18:], axis=1, inplace=True)
+            data_frames.append(df)
+        final_df = pd.concat(data_frames, ignore_index=True)
 
-    return df
+        return final_df
 
 
-def obtaining_rest_dataframe(filename):
+def obtaining_rest_dataframe(filenames):
     """Obtaining the data for Rest Interval
     input: CSV file
     Output: pandas dataframe"""
 
-    rest_df = obtaining_dataframe(filename)
+    rest_df = obtaining_dataframe(filenames)
     rest_df = rest_df.loc[rest_df["Interval Type"] == "REST"]
     rest_df.drop(list(rest_df)[7:], axis=1, inplace=True)
     rest_df.drop(columns=[r"Interval#", "Interval Type"], axis=1, inplace=True)
@@ -98,12 +106,12 @@ def obtaining_rest_dataframe(filename):
     return rest_df
 
 
-def obtaining_sleep_dataframe(filename):
+def obtaining_sleep_dataframe(filenames):
     """Obtaining the data for the Sleep Interval
     input: CSV file
     Return: pandas dataframe containing full stats for sleep interval"""
 
-    sleep_df = obtaining_dataframe(filename)
+    sleep_df = obtaining_dataframe(filenames)
     sleep_df = sleep_df.loc[sleep_df["Interval Type"] == "SLEEP"]
     sleep_df.drop(list(sleep_df)[7:10], axis=1, inplace=True)
 
@@ -135,15 +143,16 @@ def obtaining_sleep_dataframe(filename):
     return sleep_df
 
 
-def combined_stats(filename):
+def combined_stats(filenames):
     """Combine the dataframe from the preceding functions and try to get the summarised statistics
 
     Input: CSV file
 
     Return: pandas dataframe containing the summarised data"""
+    print(filenames)
 
-    resting_df = obtaining_rest_dataframe(filename)
-    sleeping_df = obtaining_sleep_dataframe(filename)
+    resting_df = obtaining_rest_dataframe(filenames)
+    sleeping_df = obtaining_sleep_dataframe(filenames)
     resting_df.reset_index(drop=True, inplace=True)
     sleeping_df.reset_index(drop=True, inplace=True)
 

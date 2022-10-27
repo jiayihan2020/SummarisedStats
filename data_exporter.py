@@ -2,40 +2,95 @@ import data_summariser
 import os
 import pandas as pd
 import openpyxl
+from collections import Counter
 
 # --- User Input ---
-working_directory = "./"
+working_directory = "./LTLB data"
 
-output_directory = "./formatted summarised data excel"
+output_directory = "formatted data/"
 
 # --------------------
 
+os.chdir(working_directory)
+if not os.path.isdir(os.path.join(os.getcwd(), output_directory)):
+    print("The folder could not be found. Creating the folder...")
+    os.mkdir(os.path.join(os.getcwd(), "formatted data"))
+    print("Folder successfully created!")
+
 subject_code_and_identity = data_summariser.obtaining_person_identity()
+changed_watch_person = [
+    same_person
+    for same_person, v in Counter(list(subject_code_and_identity.values())).items()
+    if v > 1
+]
 
-if not os.path.isdir(os.path.join(working_directory, output_directory)):
-    print("The output directory does not exist. Creating the output directory... ")
-    os.mkdir(os.path.join(os.getcwd(), output_directory))
-    print("Output directory created!")
+person_subject_code = {}
 
-for raw_files in os.listdir():
-
-    if raw_files.endswith(".csv"):
-        print(f"Opening and reading {raw_files}...")
-        subject_code = raw_files.split("_")[0]
-        summarised_data = data_summariser.combined_stats(raw_files)
-        summarised_data.reset_index(inplace=True)
-        summarised_data = summarised_data.rename(
-            columns={
-                "index": f"Summarised stats for {subject_code} - {subject_code_and_identity[subject_code]}"
-            }
-        )
-
-        print(f"Exporting summarised data for {subject_code}")
-
-        summarised_data.to_excel(
-            os.path.join(
-                os.getcwd(), output_directory, f"{subject_code} summarised data.xlsx"
-            ),
-            index=False,
-            header=True,
-        )
+if changed_watch_person:
+    list_of_file_for_person_who_changed_watch = []
+    for k, v in subject_code_and_identity.items():
+        if v in changed_watch_person:
+            if v not in person_subject_code:
+                person_subject_code[v] = [k]
+            else:
+                person_subject_code[v].append(k)
+    excluded_file = []
+    for person in changed_watch_person:
+        file_of_interest = []
+        for subject_code in person_subject_code[person]:
+            for csv_file in os.listdir():
+                if csv_file.endswith(".csv") and subject_code in csv_file:
+                    file_of_interest.append(csv_file)
+                    excluded_file.append(csv_file)
+            summarised_data = data_summariser.combined_stats(file_of_interest)
+            summarised_data.reset_index(inplace=True)
+            summarised_data = summarised_data.rename(
+                columns={
+                    "index": f"Summarised data for {person_subject_code[person]} - {person}"
+                }
+            )
+            summarised_data.to_excel(
+                os.path.join(
+                    os.getcwd(),
+                    output_directory,
+                    f"{person_subject_code[person]} summarised data.xlsx",
+                ),
+                index=False,
+                header=True,
+            )
+    for raw_data in os.listdir():
+        if raw_data.endswith(".csv") and raw_data not in excluded_file:
+            print(raw_data)
+            person_code = raw_data.split("_")[0]
+            data_summarised = data_summariser.combined_stats([raw_data])
+            data_summarised.reset_index(inplace=True)
+            data_summarised = data_summarised.rename(
+                columns={
+                    "index": f"Summarised data for {person_code} - {subject_code_and_identity[person_code]}"
+                }
+            )
+            data_summarised.to_excel(
+                os.path.join(
+                    os.getcwd(), output_directory, f"{person_code} summarised data.xlsx"
+                ),
+                index=False,
+                header=True,
+            )
+else:
+    for raw_data in os.listdir():
+        if raw_data.endswith(".csv"):
+            person_code = raw_data.split("_")[0]
+            data_summarised = data_summariser.combined_stats(raw_data)
+            data_summarised.reset_index(inplace=True)
+            data_summarised = data_summarised.rename(
+                columns={
+                    "index": f"Summarised data for {person_code} - {subject_code_and_identity[person_code]}"
+                }
+            )
+            data_summarised.to_excel(
+                os.path.join(
+                    os.getcwd(), output_directory, f"{person_code} summarised data.xlsx"
+                ),
+                index=False,
+                header=True,
+            )
