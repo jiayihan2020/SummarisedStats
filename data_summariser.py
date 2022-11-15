@@ -4,16 +4,10 @@ import csv
 import os
 
 # --- User input ---
-# input_directory = (
-#     "Actiware output/CSV output"  # Which folder contains the raw csv input?
-# )
-# output_directory = (
-#     "formatted_csv"  # Which folder do you want to export the formatted csv to?
-# )
+
 date_format = "%d/%m/%Y"
 
 # ------------------
-# os.chdir(input_directory)
 
 
 def obtaining_person_identity():
@@ -146,7 +140,7 @@ def obtaining_sleep_dataframe(filenames):
 def combined_stats(filenames):
     """Combine the dataframe from the preceding functions and try to get the summarised statistics
 
-    Input: CSV file
+    Input: CSV file names in list format
 
     Return: pandas dataframe containing the summarised data"""
     print(filenames)
@@ -195,10 +189,10 @@ def combined_stats(filenames):
 
     summary_stats["Total Time in Bed (hours)"] = pd.to_datetime(
         summary_stats["Total Time in Bed (hours)"], errors="coerce"
-    ).dt.strftime("%I:%M:%S")
+    ).dt.strftime("%H:%M:%S")
     summary_stats["Total Sleep Time (hours)"] = pd.to_datetime(
         summary_stats["Total Sleep Time (hours)"], errors="coerce"
-    ).dt.strftime("%I:%M:%S")
+    ).dt.strftime("%H:%M:%S")
 
     summary_stats.iloc[:, 3:] = summary_stats.iloc[:, 3:].round(2)
 
