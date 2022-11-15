@@ -1,4 +1,5 @@
 import data_summariser
+import condensing_excel_output
 import os
 import pandas as pd
 import openpyxl
@@ -71,7 +72,9 @@ if changed_watch_person:
             )
             data_summarised.to_excel(
                 os.path.join(
-                    os.getcwd(), output_directory, f"{person_code} summarised data.xlsx"
+                    os.getcwd(),
+                    output_directory,
+                    f"{person_code} summarised data.xlsx",
                 ),
                 index=False,
                 header=True,
@@ -94,3 +97,4 @@ else:
                 index=False,
                 header=True,
             )
+condensing_excel_output.consolidating_excel_files()
