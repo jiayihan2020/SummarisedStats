@@ -10,17 +10,17 @@ The scripts in this repository aim to obtain the summary data obtained from the 
 
 ## Functions of each scripts
 
-There are three scripts that will provide the desired output. They are:
+There are three scripts that work in conjuction to produced the desired output. They are:
 
 1) ```data_summariser.py```
 2) ```data_exporter.py```
 3) ```condensing_excel_output.py```
 
-```data_summariser.py``` will iterate through the csv  that was obtained from the Philips Actiware software for each subject, and extract out the relevant data. The script will then calculate the minimum, maximum, mean, 25th, 50th (A.K.A median), and 75th percentile, as well as the standard deviation for each of the variables that were extracted.
+```data_summariser.py``` will open the csv and then iterate through the data that was obtained from the Philips Actiware software for each subject, and extract out the relevant data. The script will then calculate the minimum, maximum, mean, 25th, 50th (A.K.A median), and 75th percentile, as well as the standard deviation for each of the variables that were extracted.
 
-```data_exporter.py``` will then export the resultant data into their respective individual excel workbook based on the subject code.
+```data_exporter.py``` will then export the resultant summarised data as a table into their respective individual excel workbook based on the subject's code.
 
-```condensing_excel_output.py``` will then combine all the data from each of the Excel file into a singular Excel workbook.
+If there are multiple subjects in the study, then ```condensing_excel_output.py``` will combine all of the excel files that were produced by the ```data_exporter.py``` script into a single Excel file.
 
 ---
 
@@ -29,7 +29,7 @@ There are three scripts that will provide the desired output. They are:
 please ensure that you have the following software installed on your computer:
 
 - Python 3.9+
-- Pandas library installed
+- ```Pandas``` library installed
   - You may install pandas using pip via the following command in Command Prompt:
   ```pip install -U pandas```
 - `xlsxwriter` module installed
@@ -40,8 +40,8 @@ please ensure that you have the following software installed on your computer:
 
 ## How to use
 
-You will only need to change the setting in the ```condensing_excel_output.py```. Simply open the python file in an IDE (e.g. Python's built in editor, or VSCode, or Notepad++ etc.) and edit the `working_directory` variable.
+You will only need to change the setting in the ```condensing_excel_output.py```. Simply open the python file in an IDE (e.g. Python's built in editor, VSCode, or Notepad++ etc.) and edit the `working_directory` variable.
 
-Then ensure that the csv file is located in the directory as specified in the `working_directory` variable, and then run the `condensing_excel_output.py` using python.
+Ensure that the csv file(s) is/are located in the directory as specified in the `working_directory` variable, and then run the `condensing_excel_output.py` using python.
 
-To run the `condensing_excel_output.py` script, simplying press `F5` or `CTRL + F5` (depending on which IDE you use, refer to the IDE help menu for more information).
+To run the `condensing_excel_output.py` script, simply press `F5` or `CTRL + F5` (depending on which IDE you use, refer to the IDE help menu for more information) and the excel file should be generated.
