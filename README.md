@@ -18,8 +18,6 @@ There are three scripts that work in conjunction to produced the desired output.
 
 If there are multiple subjects in the study, then ```condensing_excel_output.py``` will combine all of the excel files that were produced by the ```data_exporter.py``` script into a single Excel file.
 
----
-
 ## Pre-requisites
 
 please ensure that you have the following software installed on your computer:
