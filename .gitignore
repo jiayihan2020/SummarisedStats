@@ -1,2 +1,4 @@
 LTLB data/
 formatted data/
+.vscode
+*pycache*
