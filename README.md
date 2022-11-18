@@ -1,16 +1,12 @@
 # SummarisedStats
 
----
-
 ## Introduction
 
-The scripts in this repository aim to obtain the summary data obtained from the Philips Actiwatch data for eachof the sleep participants, and consolidate them into a single Excel file.
-
----
+The scripts in this repository aim to obtain the summary data obtained from the Philips Actiwatch data for each of the sleep participants, and consolidate them into a single Excel file.
 
 ## Functions of each scripts
 
-There are three scripts that work in conjuction to produced the desired output. They are:
+There are three scripts that work in conjunction to produced the desired output. They are:
 
 1) ```data_summariser.py```
 2) ```data_exporter.py```
@@ -35,8 +31,6 @@ please ensure that you have the following software installed on your computer:
 - `xlsxwriter` module installed
   - You may enter the following command in the Command Prompt to install the module:
   ```pip install -U xlsxwriter```
-
----
 
 ## How to use
 
