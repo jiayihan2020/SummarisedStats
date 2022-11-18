@@ -1,4 +1,4 @@
-# Actigraphy Summary Data Extractor and Consolidator
+# SummarisedStats
 
 ---
 
