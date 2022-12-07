@@ -1,14 +1,16 @@
 import data_summariser
-import condensing_excel_output
 import os
 import pandas as pd
 import openpyxl
-from collections import Counter
+import re
+import glob
 
 # --- User Input ---
 working_directory = "./LTLB data"
 
 output_directory = "formatted data/"
+
+location_of_manifest = "D:/OneDrive - Singapore Institute Of Technology/LTLB/Research/3. Data/Participant Manifest.xlsx"
 
 # --------------------
 
@@ -18,76 +20,70 @@ if not os.path.isdir(os.path.join(os.getcwd(), output_directory)):
     os.mkdir(os.path.join(os.getcwd(), "formatted data"))
     print("Folder successfully created!")
 
-subject_code_and_identity = data_summariser.obtaining_person_identity()
-changed_watch_person = [
-    same_person
-    for same_person, v in Counter(list(subject_code_and_identity.values())).items()
-    if v > 1
+nom_roll = data_summariser.obtaining_person_identity(location_of_manifest)
+
+while True:
+    academic_year = input(
+        "Which academic year (e.g. 21/22) do you want to filter? Note that you can only select ONE academic year:"
+    )
+    if not re.match(r"\d{2}/\d{2}", academic_year):
+        print("ERROR: Sorry, input must be in the format XX/XX, where X is an integer")
+    else:
+        break
+while True:
+    trimester = input(
+        "Which Trimester (1,2, or 3) do you want? Note that you can only input ONE Trimester:"
+    )
+    if not re.match(r"\b[1-3]\b", trimester):
+        print("ERROR: Please input an integer between 1-3.")
+    else:
+        break
+
+nom_roll = nom_roll.loc[
+    (nom_roll["AY"] == academic_year)
+    & (nom_roll["Trimester (1/2/3)"] == float(trimester))
 ]
+subject_code_and_identity = nom_roll[["ACT Subject Code", "Name"]]
+subject_code_and_identity.reset_index(drop=True, inplace=True)
 
-person_subject_code = {}
+subject_code_identity = subject_code_and_identity.set_index("ACT Subject Code")[
+    "Name"
+].to_dict()
 
-if changed_watch_person:
-    list_of_file_for_person_who_changed_watch = []
-    for k, v in subject_code_and_identity.items():
-        if v in changed_watch_person:
-            if v not in person_subject_code:
-                person_subject_code[v] = [k]
-            else:
-                person_subject_code[v].append(k)
-    excluded_file = []
-    for person in changed_watch_person:
+people_who_changed_watch = {k: v for k, v in subject_code_identity.items() if "&" in k}
+if people_who_changed_watch:
+    omitted_file = []
+    file_of_interest = []
+    for person_code in people_who_changed_watch:
+        individual_codes = person_code.split("&")
+        individual_codes_no_space = [s.strip() for s in individual_codes]
+        for individual_code in individual_codes_no_space:
+            file_name = glob.glob(f"{individual_code}*.*")[0]
+            file_of_interest.append(file_name)
+            omitted_file.append(file_name)
+        data_summarised = data_summariser.combined_stats(file_of_interest)
+        data_summarised.reset_index(inplace=True)
+        data_summarised = data_summarised.rename(
+            columns={
+                "index": f"{person_code} - {people_who_changed_watch[person_code]}"
+            }
+        )
+        data_summarised.to_excel(
+            os.path.join(
+                os.getcwd(), output_directory, f"{person_code} summarised_data.xlsx"
+            ),
+            index=False,
+            header=True,
+        )
         file_of_interest = []
-        for subject_code in person_subject_code[person]:
-            for csv_file in os.listdir():
-                if csv_file.endswith(".csv") and subject_code in csv_file:
-                    file_of_interest.append(csv_file)
-                    excluded_file.append(csv_file)
-            summarised_data = data_summariser.combined_stats(file_of_interest)
-            summarised_data.reset_index(inplace=True)
-            summarised_data = summarised_data.rename(
-                columns={
-                    "index": f"Summarised data for {person_subject_code[person]} - {person}"
-                }
-            )
-            summarised_data.to_excel(
-                os.path.join(
-                    os.getcwd(),
-                    output_directory,
-                    f"{person_subject_code[person]} summarised data.xlsx",
-                ),
-                index=False,
-                header=True,
-            )
     for raw_data in os.listdir():
-        if raw_data.endswith(".csv") and raw_data not in excluded_file:
-            print(raw_data)
+        if raw_data.endswith(".csv") and raw_data not in omitted_file:
             person_code = raw_data.split("_")[0]
             data_summarised = data_summariser.combined_stats([raw_data])
             data_summarised.reset_index(inplace=True)
             data_summarised = data_summarised.rename(
                 columns={
-                    "index": f"Summarised data for {person_code} - {subject_code_and_identity[person_code]}"
-                }
-            )
-            data_summarised.to_excel(
-                os.path.join(
-                    os.getcwd(),
-                    output_directory,
-                    f"{person_code} summarised data.xlsx",
-                ),
-                index=False,
-                header=True,
-            )
-else:
-    for raw_data in os.listdir():
-        if raw_data.endswith(".csv"):
-            person_code = raw_data.split("_")[0]
-            data_summarised = data_summariser.combined_stats(raw_data)
-            data_summarised.reset_index(inplace=True)
-            data_summarised = data_summarised.rename(
-                columns={
-                    "index": f"Summarised data for {person_code} - {subject_code_and_identity[person_code]}"
+                    "index": f"Summarised data for {person_code} - {subject_code_identity[person_code]}"
                 }
             )
             data_summarised.to_excel(
@@ -97,4 +93,23 @@ else:
                 index=False,
                 header=True,
             )
-condensing_excel_output.consolidating_excel_files()
+
+
+else:
+    for raw_data in os.listdir():
+        if raw_data.endswith(".csv"):
+            person_code = raw_data.split("_")[0]
+            data_summarised = data_summariser.combined_stats(raw_data)
+            data_summarised.reset_index(inplace=True)
+            data_summarised = data_summarised.rename(
+                columns={
+                    "index": f"Summarised data for {person_code} - {subject_code_identity[person_code]}"
+                }
+            )
+            data_summarised.to_excel(
+                os.path.join(
+                    os.getcwd(), output_directory, f"{person_code} summarised data.xlsx"
+                ),
+                index=False,
+                header=True,
+            )
