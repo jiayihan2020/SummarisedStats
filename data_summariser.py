@@ -10,21 +10,22 @@ date_format = "%d/%m/%Y"
 # ------------------
 
 
-def obtaining_person_identity():
-    """Obtain the Subject Code and the corresponding students name
-    Return: dictionary containing Subject Code and corresponding Name.
+def obtaining_person_identity(manifest_location):
+    """Going through the manifest and then obtain the relevant information
+
+    Args:
+        manifest_location (str): The absolute filepath for the manifest.
+
+    Returns:
+        Dict: The subject code of the person together with the corresponding student's identity.
     """
-    subject_name_and_code = {}
+    df = pd.read_excel(manifest_location)
+    df = df[
+        ["Name", "ACT Subject Code", "AY", "Trimester (1/2/3)", "Arm (LTLB/ Control)"]
+    ]
+    df = df.loc[(df["ACT Subject Code"] != "N") & (df["ACT Subject Code"].notnull())]
 
-    for i in os.listdir():
-        if i.endswith("pdf"):
-            relevant_info = i.split(" Actigraphy")
-            search_term = r"SIT\d{3}"
-            subject_name = relevant_info[0]
-            subject_code = re.findall(search_term, relevant_info[-1])[0]
-            subject_name_and_code[subject_code] = subject_name
-
-    return subject_name_and_code
+    return df
 
 
 def obtaining_dataframe(filenames):
