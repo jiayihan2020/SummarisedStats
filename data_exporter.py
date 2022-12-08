@@ -6,7 +6,7 @@ import re
 import glob
 
 # --- User Input ---
-working_directory = "./LTLB data"
+working_directory = "./Actiware csv outputs post sleep diary/Control Group"
 
 output_directory = "formatted data/"
 
@@ -21,7 +21,7 @@ if not os.path.isdir(os.path.join(os.getcwd(), output_directory)):
     print("Folder successfully created!")
 
 nom_roll = data_summariser.obtaining_person_identity(location_of_manifest)
-
+options_for_research = {"1": "Control", "2": "LTLB"}
 while True:
     academic_year = input(
         "Which academic year (e.g. 21/22) do you want to filter? Note that you can only select ONE academic year:"
@@ -38,10 +38,25 @@ while True:
         print("ERROR: Please input an integer between 1-3.")
     else:
         break
+while True:
+    which_arm = input(
+        """Which research arm are you interested in?
+    1) Control
+    2) LTLB\n
+    Select only the corresponding (e.g. 1)"""
+    )
+    if not re.match(r"\b[1-2]\b", which_arm):
+        print(
+            "ERROR: Please key in the correct number corresponding to the research arm (e.g. 1, or 2):"
+        )
+    else:
+        break
+
 
 nom_roll = nom_roll.loc[
     (nom_roll["AY"] == academic_year)
     & (nom_roll["Trimester (1/2/3)"] == float(trimester))
+    & (nom_roll["Arm (LTLB/ Control)"] == options_for_research[which_arm])
 ]
 subject_code_and_identity = nom_roll[["ACT Subject Code", "Name"]]
 subject_code_and_identity.reset_index(drop=True, inplace=True)
@@ -99,7 +114,7 @@ else:
     for raw_data in os.listdir():
         if raw_data.endswith(".csv"):
             person_code = raw_data.split("_")[0]
-            data_summarised = data_summariser.combined_stats(raw_data)
+            data_summarised = data_summariser.combined_stats([raw_data])
             data_summarised.reset_index(inplace=True)
             data_summarised = data_summarised.rename(
                 columns={
