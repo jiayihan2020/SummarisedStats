@@ -23,7 +23,7 @@ def obtaining_person_identity(manifest_location):
         df = pd.read_excel(manifest_location)
     except PermissionError:
         print(
-            "ERROR: Permission Error! Please ensure that you have sufficient permission to access the manifest file. If the manifest file is already opened, please close it."
+            "ERROR: Permission Error! Please ensure that you have sufficient permission to access the manifest file. If the manifest file is already opened, please close it before running the script again."
         )
     except FileNotFoundError:
         print(
