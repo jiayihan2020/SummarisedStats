@@ -134,6 +134,17 @@ def obtaining_sleep_dataframe(filenames):
             r"#Awake",
         ]
     ]
+    sleep_df.update(
+        sleep_df[
+            [
+                "Total Sleep Time (hours)",
+                "Onset Latency (minutes)",
+                "Sleep Efficiency (percent)",
+                "WASO (minutes)",
+                "#Awake",
+            ]
+        ].fillna(0)
+    )
 
     return sleep_df
 
