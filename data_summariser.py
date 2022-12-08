@@ -19,13 +19,27 @@ def obtaining_person_identity(manifest_location):
     Returns:
         Dict: The subject code of the person together with the corresponding student's identity.
     """
-    df = pd.read_excel(manifest_location)
-    df = df[
-        ["Name", "ACT Subject Code", "AY", "Trimester (1/2/3)", "Arm (LTLB/ Control)"]
-    ]
-    df = df.loc[(df["ACT Subject Code"] != "N") & (df["ACT Subject Code"].notnull())]
+    try:
+        df = pd.read_excel(manifest_location)
+    except PermissionError:
+        print(
+            "ERROR: Permission Error! Please ensure that you have sufficient permission to access the manifest file. If the manifest file is already opened, please close it."
+        )
+    else:
+        df = df[
+            [
+                "Name",
+                "ACT Subject Code",
+                "AY",
+                "Trimester (1/2/3)",
+                "Arm (LTLB/ Control)",
+            ]
+        ]
+        df = df.loc[
+            (df["ACT Subject Code"] != "N") & (df["ACT Subject Code"].notnull())
+        ]
 
-    return df
+        return df
 
 
 def obtaining_dataframe(filenames):
