@@ -25,6 +25,10 @@ def obtaining_person_identity(manifest_location):
         print(
             "ERROR: Permission Error! Please ensure that you have sufficient permission to access the manifest file. If the manifest file is already opened, please close it."
         )
+    except FileNotFoundError:
+        print(
+            "ERROR: The manifest file could not be found. Please ensure that the filepath to the manifest excel file as specified in the data_exporter.py is valid."
+        )
     else:
         df = df[
             [
