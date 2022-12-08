@@ -108,7 +108,7 @@ def obtaining_sleep_dataframe(filenames):
 
     sleep_df = obtaining_dataframe(filenames)
     sleep_df = sleep_df.loc[sleep_df["Interval Type"] == "SLEEP"]
-    sleep_df.drop(list(sleep_df)[7:10], axis=1, inplace=True)
+    sleep_df.drop(list(sleep_df)[7], axis=1, inplace=True)
 
     sleep_df = sleep_df.loc[:, "Onset Latency":"%Sleep"]
     sleep_df.drop(columns=["Wake Time", "%Wake", "%Sleep"], axis=1, inplace=True)
@@ -144,7 +144,6 @@ def combined_stats(filenames):
     Input: CSV file names in list format
 
     Return: pandas dataframe containing the summarised data"""
-    print(filenames)
 
     resting_df = obtaining_rest_dataframe(filenames)
     sleeping_df = obtaining_sleep_dataframe(filenames)
