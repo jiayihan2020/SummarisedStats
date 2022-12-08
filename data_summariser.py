@@ -126,7 +126,6 @@ def obtaining_sleep_dataframe(filenames):
 
     sleep_df = obtaining_dataframe(filenames)
     sleep_df = sleep_df.loc[sleep_df["Interval Type"] == "SLEEP"]
-    sleep_df.drop(list(sleep_df)[7], axis=1, inplace=True)
 
     sleep_df = sleep_df.loc[:, "Onset Latency":"%Sleep"]
     sleep_df.drop(columns=["Wake Time", "%Wake", "%Sleep"], axis=1, inplace=True)
