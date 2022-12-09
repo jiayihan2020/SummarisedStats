@@ -6,11 +6,11 @@ import re
 import glob
 
 # --- User Input ---
-working_directory = "./Actiware csv outputs post sleep diary/Control Group"
+working_directory = "./Actigraphy new csv"
 
 output_directory = "formatted data/"
 
-location_of_manifest = "D:/OneDrive - Singapore Institute Of Technology/LTLB/Research/3. Data/Participant Manifest.xlsx"
+location_of_manifest = "D:/OneDrive - Singapore Institute Of Technology/LTLB/Research/3. Data/Participant Manifest - with AY 22-23 Tri 1 LTLB arm.xlsx"
 
 # --------------------
 

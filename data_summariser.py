@@ -2,6 +2,7 @@ import pandas as pd
 import re
 import csv
 import os
+import numpy as np
 
 # --- User input ---
 
@@ -19,31 +20,13 @@ def obtaining_person_identity(manifest_location):
     Returns:
         Dict: The subject code of the person together with the corresponding student's identity.
     """
-    try:
-        df = pd.read_excel(manifest_location)
-    except PermissionError:
-        print(
-            "ERROR: Permission Error! Please ensure that you have sufficient permission to access the manifest file. If the manifest file is already opened, please close it before running the script again."
-        )
-    except FileNotFoundError:
-        print(
-            "ERROR: The manifest file could not be found. Please ensure that the filepath to the manifest excel file as specified in the data_exporter.py is valid."
-        )
-    else:
-        df = df[
-            [
-                "Name",
-                "ACT Subject Code",
-                "AY",
-                "Trimester (1/2/3)",
-                "Arm (LTLB/ Control)",
-            ]
-        ]
-        df = df.loc[
-            (df["ACT Subject Code"] != "N") & (df["ACT Subject Code"].notnull())
-        ]
+    df = pd.read_excel(manifest_location)
+    df = df[
+        ["Name", "ACT Subject Code", "AY", "Trimester (1/2/3)", "Arm (LTLB/ Control)"]
+    ]
+    df = df.loc[(df["ACT Subject Code"] != "N") & (df["ACT Subject Code"].notnull())]
 
-        return df
+    return df
 
 
 def obtaining_dataframe(filenames):
@@ -151,17 +134,6 @@ def obtaining_sleep_dataframe(filenames):
             r"#Awake",
         ]
     ]
-    sleep_df.update(
-        sleep_df[
-            [
-                "Total Sleep Time (hours)",
-                "Onset Latency (minutes)",
-                "Sleep Efficiency (percent)",
-                "WASO (minutes)",
-                "#Awake",
-            ]
-        ].fillna(0)
-    )
 
     return sleep_df
 
@@ -199,6 +171,37 @@ def combined_stats(filenames):
     new_df["Bed Time"] = pd.to_datetime(new_df["Bed Time"])
 
     new_df[column_to_change] = new_df[column_to_change].apply(pd.to_numeric)
+
+    new_df["Onset Latency (minutes)"] = np.where(
+        (new_df["Total Time in Bed (hours)"].notna())
+        & (new_df["Onset Latency (minutes)"].isna()),
+        0,
+        new_df["Onset Latency (minutes)"],
+    )
+
+    new_df["Onset Latency (minutes)"] = np.where(
+        (new_df["Total Time in Bed (hours)"].notna())
+        & (new_df["Onset Latency (minutes)"].isna()),
+        0,
+        new_df["Onset Latency (minutes)"],
+    )
+    new_df["Sleep Efficiency (percent)"] = np.where(
+        (new_df["Total Time in Bed (hours)"].notna())
+        & (new_df["Sleep Efficiency (percent)"].isna()),
+        0.0,
+        new_df["Sleep Efficiency (percent)"],
+    )
+    new_df["WASO (minutes)"] = np.where(
+        (new_df["Total Time in Bed (hours)"].notna())
+        & (new_df["WASO (minutes)"].isna()),
+        0,
+        new_df["WASO (minutes)"],
+    )
+    new_df["#Awake"] = np.where(
+        (new_df["Total Time in Bed (hours)"].notnull()) & (new_df["#Awake"].isna()),
+        0,
+        new_df["#Awake"],
+    )
 
     summary_stats = new_df.describe(datetime_is_numeric=True)
 
