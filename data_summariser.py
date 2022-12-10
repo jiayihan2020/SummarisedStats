@@ -159,6 +159,11 @@ def combined_stats(filenames):
     ]
 
     new_df["Get Up Time"] = pd.to_datetime(new_df["Get Up Time"])
+    new_df["Total Sleep Time (hours)"] = np.where(
+        (new_df["Bed Time"].notnull()) & (new_df["Total Sleep Time (hours)"].isna()),
+        0,
+        new_df["Total Sleep Time (hours)"],
+    )
     new_df["Total Time in Bed (hours)"] = pd.to_datetime(
         new_df["Total Time in Bed (hours)"], unit="m"
     )
@@ -173,32 +178,28 @@ def combined_stats(filenames):
     new_df[column_to_change] = new_df[column_to_change].apply(pd.to_numeric)
 
     new_df["Onset Latency (minutes)"] = np.where(
-        (new_df["Total Time in Bed (hours)"].notna())
-        & (new_df["Onset Latency (minutes)"].isna()),
+        (new_df["Bed Time"].notna()) & (new_df["Onset Latency (minutes)"].isna()),
         0,
         new_df["Onset Latency (minutes)"],
     )
 
     new_df["Onset Latency (minutes)"] = np.where(
-        (new_df["Total Time in Bed (hours)"].notna())
-        & (new_df["Onset Latency (minutes)"].isna()),
+        (new_df["Bed Time"].notna()) & (new_df["Onset Latency (minutes)"].isna()),
         0,
         new_df["Onset Latency (minutes)"],
     )
     new_df["Sleep Efficiency (percent)"] = np.where(
-        (new_df["Total Time in Bed (hours)"].notna())
-        & (new_df["Sleep Efficiency (percent)"].isna()),
+        (new_df["Bed Time"].notna()) & (new_df["Sleep Efficiency (percent)"].isna()),
         0.0,
         new_df["Sleep Efficiency (percent)"],
     )
     new_df["WASO (minutes)"] = np.where(
-        (new_df["Total Time in Bed (hours)"].notna())
-        & (new_df["WASO (minutes)"].isna()),
+        (new_df["Bed Time"].notna()) & (new_df["WASO (minutes)"].isna()),
         0,
         new_df["WASO (minutes)"],
     )
     new_df["#Awake"] = np.where(
-        (new_df["Total Time in Bed (hours)"].notnull()) & (new_df["#Awake"].isna()),
+        (new_df["Bed Time"].notnull()) & (new_df["#Awake"].isna()),
         0,
         new_df["#Awake"],
     )
