@@ -39,9 +39,9 @@ You will only need to change the settings in the ```data_exporter.py``` and ```c
 
 ### data_exporter.py
 
-In the `User Input` section of the script, edit the `working_directory` variable with the filepath containing the CSV outputs generated from Philips Actiware software. Replace all '\' symbols with '/' symbols (without the quotation marks) in the filepath if you are using Windows.
+In the `User Input` section of the script, edit the `working_directory` variable with the filepath containing the CSV outputs generated from Philips Actiware software. Replace all '\' symbols with '/' symbol (without the quotation marks) in the filepath if you are using Windows.
 
-Edit the `location_of_manifest` variable with the filepath that points to the manifest location. Replace all '\' symbols with '/' symbols (without the quotation marks) in the filepath if you are using Windows.
+Edit the `location_of_manifest` variable with the filepath that points to the manifest location. Replace all '\' symbols with '/' (without the quotation marks) in the filepath if you are using Windows.
 
 Run the script. If you are using the default Python IDE, press 'F5' to run the script. If you are using a different IDE (e.g. Sublime Text or VSCode, etc.), use the respective IDE's keyboard shortcut to run the script.
 
