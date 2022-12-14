@@ -24,11 +24,14 @@ please ensure that you have the following software installed on your computer:
 
 - Python 3.9+
 - ```Pandas``` library installed
-  - You may install pandas using pip via the following command in Command Prompt:
+  - You may install pandas using pip via the following command in Command Prompt/Powershell/terminal:
   ```pip install -U pandas```
 - `xlsxwriter` module installed
-  - You may enter the following command in the Command Prompt to install the module:
+  - You may enter the following command in the Command Prompt/Powershell/terminal to install the module:
   ```pip install -U xlsxwriter```
+- `send2trash` module installed
+  - You may enter the following command in the Command Prompt/Powershell/terminal:
+  ```pip install -U send2trash```
 
 ## How to use
 
