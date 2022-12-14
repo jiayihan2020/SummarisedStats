@@ -24,7 +24,7 @@ nom_roll = data_summariser.obtaining_person_identity(location_of_manifest)
 options_for_research = {"1": "Control", "2": "LTLB"}
 while True:
     academic_year = input(
-        "Which academic year (e.g. 21/22) do you want to filter? Note that you can only select ONE academic year:"
+        "Which academic year (e.g. 21/22) are you interested in? Note that you can only select ONE academic year:"
     )
     if not re.match(r"\d{2}/\d{2}", academic_year):
         print("ERROR: Sorry, input must be in the format XX/XX, where X is an integer")
@@ -32,7 +32,7 @@ while True:
         break
 while True:
     trimester = input(
-        "Which Trimester (1,2, or 3) do you want? Note that you can only input ONE Trimester:"
+        "Which Trimester (1,2, or 3) are you interested in? Note that you can only input ONE Trimester:"
     )
     if not re.match(r"\b[1-3]\b", trimester):
         print("ERROR: Please input an integer between 1-3.")
@@ -43,11 +43,11 @@ while True:
         """Which research arm are you interested in?
     1) Control
     2) LTLB\n
-    Select only the corresponding (e.g. 1)"""
+    Select only the corresponding (e.g. 1):"""
     )
     if not re.match(r"\b[1-2]\b", which_arm):
         print(
-            "ERROR: Please key in the correct number corresponding to the research arm (e.g. 1, or 2):"
+            "ERROR: Please key in the correct integer corresponding to the research arm (e.g. 1, or 2):"
         )
     else:
         break
