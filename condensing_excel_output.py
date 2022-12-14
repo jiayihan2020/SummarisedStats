@@ -15,34 +15,44 @@ def consolidating_excel_files():
     """Consolidate all the excel files containing the summary stats into one excel file."""
 
     os.chdir(working_directory)
+    count_file = 0
 
-    row_number = 0
-    data_file = []
+    for _ in os.listdir():
+        if _.endswith(".xlsx"):
+            count_file += 1
+    if count_file > 1:
 
-    for file in os.listdir():
+        row_number = 0
+        data_file = []
 
-        if (
-            file.endswith("xlsx")
-            and not file.startswith("~$")
-            and "Consolidated" not in file
-        ):
-            print(
-                f"Opening and exporting the data from {file} into consolidated excel..."
-            )
-            df = pd.read_excel(file)
-            data_file.append(df)
+        for file in os.listdir():
 
-    writer = pd.ExcelWriter("Consolidated stats.xlsx", engine="xlsxwriter")
-    for data in data_file:
-        data.to_excel(writer, sheet_name="Results", startrow=row_number)
-        row_number += 10
+            if (
+                file.endswith("xlsx")
+                and not file.startswith("~$")
+                and "Consolidated" not in file
+            ):
+                print(
+                    f"Opening and exporting the data from {file} into consolidated excel..."
+                )
+                df = pd.read_excel(file)
+                data_file.append(df)
 
-    writer.save()
-    print("Done!")
-    for file in os.listdir():
-        if file.endswith(".xlsx") and "Consolidated" not in file:
-            print(f"Sending {file} into the recycle bin...")
-            send2trash.send2trash(file)
+        writer = pd.ExcelWriter("Consolidated stats.xlsx", engine="xlsxwriter")
+        for data in data_file:
+            data.to_excel(writer, sheet_name="Results", startrow=row_number)
+            row_number += 10
+
+        writer.save()
+        print("Done!")
+        for file in os.listdir():
+            if file.endswith(".xlsx") and "Consolidated" not in file:
+                print(f"Sending {file} into the recycle bin...")
+                send2trash.send2trash(file)
+    else:
+        print(
+            "There is only one xlsx file in this folder. The script will only work if more than one xlsx files are detected."
+        )
 
 
 consolidating_excel_files()

@@ -16,7 +16,9 @@ location_of_manifest = "D:/OneDrive - Singapore Institute Of Technology/LTLB/Res
 
 os.chdir(working_directory)
 if not os.path.isdir(os.path.join(os.getcwd(), output_directory)):
-    print("The folder could not be found. Creating the folder...")
+    print(
+        "The formatted files folder to store the formatted xlsx files could not be found. Creating the folder..."
+    )
     os.mkdir(os.path.join(os.getcwd(), "formatted data"))
     print("Folder successfully created!")
 
