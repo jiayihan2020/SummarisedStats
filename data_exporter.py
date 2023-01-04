@@ -14,7 +14,7 @@ except ModuleNotFoundError:
     for packaging in required_packages:
         subprocess.call([sys.executable, "-m", "pip", "install", packaging])
     print(
-        "Download completed! data_exporter.py will attempt to import the required packages again. If error occurs, please rerun the script again."
+        "Download completed! data_exporter.py will attempt to import the required packages again. If error occurs, please run the script again."
     )
     import pandas as pd
     import openpyxl

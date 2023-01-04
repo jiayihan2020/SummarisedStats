@@ -13,7 +13,7 @@ except ModuleNotFoundError:
     for package in required_packages:
         subprocess.call([sys.executable, "pip", "install", package])
     print(
-        "Download completed! condensing_excel_output.py will attempt to import the packages again. If error occurs, please rerun the script again."
+        "Download completed! condensing_excel_output.py will attempt to import the packages again. If error occurs, please run the script again."
     )
     import xlsxwriter
     import send2trash
