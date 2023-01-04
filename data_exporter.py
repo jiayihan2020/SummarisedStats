@@ -9,7 +9,7 @@ try:
     import pandas as pd
     import openpyxl
 except ModuleNotFoundError:
-    print("Some of the modules are not installed. Installing required packages...")
+    print("The required packages are not installed. Installing required packages...")
     required_packages = ["pandas", "openpyxl"]
     for packaging in required_packages:
         subprocess.call([sys.executable, "-m", "pip", "install", packaging])
