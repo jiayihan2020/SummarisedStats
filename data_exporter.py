@@ -1,9 +1,24 @@
 import data_summariser
 import os
-import pandas as pd
-import openpyxl
 import re
 import glob
+import subprocess
+import sys
+
+try:
+    import pandas as pd
+    import openpyxl
+except ModuleNotFoundError:
+    print("The required packages are not installed. Installing required packages...")
+    required_packages = ["pandas", "openpyxl"]
+    for packaging in required_packages:
+        subprocess.call([sys.executable, "-m", "pip", "install", packaging])
+    print(
+        "Download completed! data_exporter.py will attempt to import the required packages again. If error occurs, please run the script again."
+    )
+    import pandas as pd
+    import openpyxl
+
 
 # --- User Input ---
 working_directory = "./Actigraphy new csv"
