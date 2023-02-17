@@ -1,8 +1,6 @@
 import pandas as pd
 import plotly.express as px
-import plotly
 import matplotlib.pyplot as plt
-import data_summariser
 from pathlib import Path
 import os
 
