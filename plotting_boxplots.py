@@ -72,6 +72,9 @@ df_ltlb_timing["Get Up Time (unix)"] = (
 
 df_ltlb_timing = df_ltlb_timing.iloc[:, 3:]
 
+
+# TODO: need to adjust the y-axis labelling from unix timing to human readable time format.
+# TODO: If possible, add a way to label the plots generated from seaborn/matplotlib
 for timing in df_control_timing.columns:
     figure = plt.figure()
     concat_df = pd.DataFrame(
