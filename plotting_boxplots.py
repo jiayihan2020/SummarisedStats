@@ -13,7 +13,7 @@ df_control_group = pd.read_excel("List of Median Values for Control group.xlsx")
 df_ltlb_group = pd.read_excel("List of Median Values for LTLB group.xlsx")
 
 
-# --- Dealing with the difficult case of handling datetime objects (AKA Get Up time, Total time in bed (hours), and Total Sleep Time (hour))
+# --- Dealing with the difficult case of handling datetime objects ---
 
 
 df_control_timing = df_control_group.iloc[:, 0:4]
