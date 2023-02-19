@@ -13,17 +13,14 @@ df_control_group = pd.read_excel("List of Median Values for Control group.xlsx")
 df_ltlb_group = pd.read_excel("List of Median Values for LTLB group.xlsx")
 
 
-# --- Dealing with the fringe case of Bed Time ---
-
-
 # --- Dealing with the difficult case of handling datetime objects (AKA Get Up time, Total time in bed (hours), and Total Sleep Time (hour))
 
 
-df_control_timing = df_control_group.iloc[:, 1:4]
-df_ltlb_timing = df_ltlb_group.iloc[:, 1:4]
+df_control_timing = df_control_group.iloc[:, 0:4]
+df_ltlb_timing = df_ltlb_group.iloc[:, 0:4]
 
 
-cols = df_control_timing.columns[1:3]
+cols = df_control_timing.columns[2:]
 df_control_timing[cols] = df_control_timing[cols].apply(pd.to_timedelta)
 
 df_control_timing = df_control_timing.assign(
@@ -40,18 +37,42 @@ df_control_timing = df_control_timing.assign(
     ]
 )
 
-df_control_timing["Get Up Time"] = pd.to_datetime(
-    df_control_timing["Get Up Time"],
+
+df_control_timing["Bed Time"] = df_control_timing["Bed Time"].str.replace("AM", "pm")
+
+df_control_timing["Bed Time"] = df_control_timing["Bed Time"].str.replace("PM", "am")
+
+cols_to_change_to_dt = df_control_timing.columns[:2]
+
+df_control_timing[cols_to_change_to_dt] = df_control_timing[cols_to_change_to_dt].apply(
+    pd.to_datetime
 )
+
+df_control_timing["Bed Time (unix)"] = (
+    df_control_timing["Bed Time"] - pd.Timestamp("1970-01-01")
+) // pd.Timedelta("1s")
+
 
 df_control_timing["Get Up Time (unix)"] = (
     df_control_timing["Get Up Time"] - pd.Timestamp("1970-01-01")
 ) // pd.Timedelta("1s")
 
 
-df_control_timing = df_control_timing.iloc[:, 3:]
+df_control_timing = df_control_timing.drop(
+    columns=[
+        "Bed Time",
+        "Get Up Time",
+        "Total Time in Bed (hours)",
+        "Total Sleep Time (hours)",
+    ]
+)
+
 
 df_ltlb_timing[cols] = df_ltlb_timing[cols].apply(pd.to_timedelta)
+
+df_ltlb_timing["Bed Time"] = df_ltlb_timing["Bed Time"].str.replace("AM", "pm")
+
+df_ltlb_timing["Bed Time"] = df_ltlb_timing["Bed Time"].str.replace("PM", "am")
 
 df_ltlb_timing = df_ltlb_timing.assign(
     Total_Time_in_Bed_hours=[
@@ -64,17 +85,30 @@ df_ltlb_timing = df_ltlb_timing.assign(
         (b.seconds) / (60.0 * 60.0) for b in df_ltlb_timing["Total Sleep Time (hours)"]
     ]
 )
-df_ltlb_timing["Get Up Time"] = pd.to_datetime(df_ltlb_timing["Get Up Time"])
+df_ltlb_timing[cols_to_change_to_dt] = df_ltlb_timing[cols_to_change_to_dt].apply(
+    pd.to_datetime
+)
+
+df_ltlb_timing["Bed Time (unix)"] = (
+    df_ltlb_timing["Bed Time"] - pd.Timestamp("1970-01-01")
+) // pd.Timedelta("1s")
 
 df_ltlb_timing["Get Up Time (unix)"] = (
     df_ltlb_timing["Get Up Time"] - pd.Timestamp("1970-01-01")
 ) // pd.Timedelta("1s")
 
-df_ltlb_timing = df_ltlb_timing.iloc[:, 3:]
+df_ltlb_timing = df_ltlb_timing.drop(
+    columns=[
+        "Bed Time",
+        "Get Up Time",
+        "Total Time in Bed (hours)",
+        "Total Sleep Time (hours)",
+    ]
+)
 
 
-# TODO: need to adjust the y-axis labelling from unix timing to human readable time format.
-# TODO: If possible, add a way to label the plots generated from seaborn/matplotlib
+# # TODO: need to adjust the y-axis labelling from unix timing to human readable time format.
+# # TODO: If possible, add a way to label the plots generated from seaborn/matplotlib
 for timing in df_control_timing.columns:
     figure = plt.figure()
     concat_df = pd.DataFrame(
@@ -91,13 +125,57 @@ for timing in df_control_timing.columns:
     plotly_timing.write_html(f"{timing}.html")
 
 df_control_summarised_timing = df_control_timing.describe()
+df_control_summarised_timing["Bed Time"] = pd.to_datetime(
+    df_control_summarised_timing["Bed Time (unix)"], unit="s"
+)
+
+df_control_summarised_timing["Bed Time"] = df_control_summarised_timing[
+    "Bed Time"
+].dt.strftime("%I:%M:%S %p")
+
+df_control_summarised_timing["Bed Time"] = df_control_summarised_timing[
+    "Bed Time"
+].str.replace("AM", "pm")
+df_control_summarised_timing["Bed Time"] = df_control_summarised_timing[
+    "Bed Time"
+].str.replace("PM", "am")
+
 df_control_summarised_timing["Get Up Time"] = pd.to_datetime(
     df_control_summarised_timing["Get Up Time (unix)"], unit="s"
-).dt.time
+)
+
+df_control_summarised_timing["Get Up Time"] = df_control_summarised_timing[
+    "Get Up Time"
+].dt.strftime("%I:%M:%S %p")
+
 df_ltlb_summarised_timing = df_ltlb_timing.describe()
+df_ltlb_summarised_timing["Bed Time"] = pd.to_datetime(
+    df_ltlb_summarised_timing["Bed Time (unix)"], unit="s"
+)
 df_ltlb_summarised_timing["Get Up Time"] = pd.to_datetime(
     df_ltlb_summarised_timing["Get Up Time (unix)"], unit="s"
-).dt.time
+)
+df_ltlb_summarised_timing["Bed Time"] = df_ltlb_summarised_timing[
+    "Bed Time"
+].dt.strftime("%I:%M:%S %p")
+
+df_ltlb_summarised_timing["Get Up Time"] = df_ltlb_summarised_timing[
+    "Get Up Time"
+].dt.strftime("%I:%M:%S %p")
+
+df_ltlb_summarised_timing["Bed Time"] = df_ltlb_summarised_timing[
+    "Bed Time"
+].str.replace("AM", "pm")
+df_ltlb_summarised_timing["Bed Time"] = df_ltlb_summarised_timing[
+    "Bed Time"
+].str.replace("PM", "am")
+
+df_ltlb_summarised_timing["Bed Time"] = df_ltlb_summarised_timing[
+    "Bed Time"
+].str.replace("am", "AM")
+df_ltlb_summarised_timing["Bed Time"] = df_ltlb_summarised_timing[
+    "Bed Time"
+].str.replace("pm", "PM")
 
 print(
     "Generating the summarised stats for the timing portion (san the bed time) in Excel format..."
