@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
 import os
+import matplotlib.ticker as mticker
 
 
 working_directory = Path("Combining the median")
@@ -107,8 +108,6 @@ df_ltlb_timing = df_ltlb_timing.drop(
 )
 
 
-# # TODO: need to adjust the y-axis labelling from unix timing to human readable time format.
-# # TODO: If possible, add a way to label the plots generated from seaborn/matplotlib
 for timing in df_control_timing.columns:
     figure = plt.figure()
     concat_df = pd.DataFrame(
@@ -117,7 +116,26 @@ for timing in df_control_timing.columns:
             "LTLB Group": df_ltlb_timing[timing],
         }
     )
-    sns.boxplot(data=concat_df, palette="flare")
+    medians = concat_df.median()
+    box_plot = sns.boxplot(data=concat_df, palette="flare")
+
+    sns.set(rc={"figure.figsize": (11.37, 8.27)})
+    ax = plt.gca()
+    y_axis = ax.get_yticks()
+    if timing == "Bed Time (unix)" or timing == "Get Up Time (unix)":
+
+        ax.set_yticklabels(
+            [pd.to_datetime(tm, unit="s").strftime("%I:%M:%S %p") for tm in y_axis]
+        )
+        if timing == "Bed Time (unix)":
+            plt.ylabel("Bed Time")
+        else:
+            plt.ylabel("Get Up Time")
+    else:
+        ax.set_yticklabels([pd.to_timedelta(a, unit="h") for a in y_axis])
+        plt.ylabel(f"{timing}")
+    plt.xlabel("Research groups")
+
     print(f"Generating boxplot for {timing} using seaborn...")
     figure.savefig(f"{timing}.png", format="png")
     plotly_timing = px.box(concat_df)
@@ -178,67 +196,60 @@ df_ltlb_summarised_timing["Bed Time"] = df_ltlb_summarised_timing[
 ].str.replace("pm", "PM")
 
 print(
-    "Generating the summarised stats for the timing portion (san the bed time) in Excel format..."
+    "Generating the summarised stats for the timing portion (Bed Time, Get Up Time, Total time in Bed, and Total Sleep Time)..."
 )
 data_timing = []
 
 data_timing.extend([df_control_summarised_timing, df_ltlb_summarised_timing])
 
-writer_timing = pd.ExcelWriter(
-    "Combined Stats for time portion for both control and LTLB.xlsx",
-    engine="xlsxwriter",
-)
-
-row = 0
-
-for data in data_timing:
-    data.to_excel(writer_timing, sheet_name="Result", startrow=row)
-    row += 10
-
-writer_timing.save()
-
-print("Excel file generated!")
 
 # --- Obtaining and plotting the stats for Onset Latency, Sleep Efficiency, WASO, and Number of Awake. ---
 
 
-# df_just_numbers_control = df_control_group.iloc[:, 4:]
-# df_just_numbers_ltlb = df_ltlb_group.iloc[:, 4:]
+df_just_numbers_control = df_control_group.iloc[:, 4:]
+df_just_numbers_ltlb = df_ltlb_group.iloc[:, 4:]
 
-# for column in df_just_numbers_control.columns:
-#     combined_dfs = pd.DataFrame(
-#         {
-#             "Control Group": df_just_numbers_control[column],
-#             "LTLB Group": df_just_numbers_ltlb[column],
-#         }
-#     )
-#     fig = plt.figure()
-#     sns.boxplot(data=combined_dfs, palette="flare")
-#     print(f"Generating box plot for {column} using matplotlib....")
-#     fig.savefig(f"{column}.png", format="png")
-#     figure_plotly = px.box(combined_dfs)
-#     print(f"Generating boxplot for {column} using plotly...")
-#     figure_plotly.write_html(f"{column}.html")
-# print("All plots have been generated successfully!")
-# summarised_stats_control = df_just_numbers_control.describe()
-# summarised_stats_ltlb = df_just_numbers_ltlb.describe()
-# print(
-#     "Generating the summarised stats for all the median collected as an excel file..."
-# )
-# # --- Exporting the summarised data to excel form for checking ---
-# data_sets = []
+for column in df_just_numbers_control.columns:
+    combined_dfs = pd.DataFrame(
+        {
+            "Control Group": df_just_numbers_control[column],
+            "LTLB Group": df_just_numbers_ltlb[column],
+        }
+    )
+    fig = plt.figure()
+    sns.boxplot(data=combined_dfs, palette="flare")
+    print(f"Generating box plot for {column} using matplotlib....")
+    fig.savefig(f"{column}.png", format="png")
+    figure_plotly = px.box(combined_dfs)
+    print(f"Generating boxplot for {column} using plotly...")
+    figure_plotly.write_html(f"{column}.html")
+print("All plots have been generated successfully!")
+summarised_stats_control = df_just_numbers_control.describe()
+summarised_stats_ltlb = df_just_numbers_ltlb.describe()
+print("Generating the summarised stats as an Excel file...")
 
-# data_sets.extend([summarised_stats_control, summarised_stats_ltlb])
+data_sets = []
 
-# row_number = 0
+data_sets.extend([summarised_stats_control, summarised_stats_ltlb])
 
-# writer = pd.ExcelWriter(
-#     "Consolidated median stats for control and LTLB group.xlsx", engine="xlsxwriter"
-# )
-# for summarise in data_sets:
-#     summarise.to_excel(writer, sheet_name="Results", startrow=row_number)
-#     row_number += 10
-# writer.save()
+row_number = 0
+
+writer = pd.ExcelWriter("Summarised Stats.xlsx", engine="xlsxwriter")
+
+for time_summarised in data_timing:
+    time_summarised.to_excel(
+        writer, sheet_name="Datetime variables", startrow=row_number
+    )
+    row_number += 10
+
+row_number = 0
+
+for summarise in data_sets:
+    summarise.to_excel(
+        writer, sheet_name="Float and Integer variables", startrow=row_number
+    )
+    row_number += 10
+writer.save()
 
 
-# print("The excel file has been generated successfully!")
+print("The excel file has been generated successfully!")
