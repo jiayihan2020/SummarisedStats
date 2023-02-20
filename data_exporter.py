@@ -38,20 +38,26 @@ if not os.path.isdir(os.path.join(os.getcwd(), output_directory)):
     print("Folder successfully created!")
 
 nom_roll = data_summariser.obtaining_person_identity(location_of_manifest)
-options_for_research = {"1": "Control", "2": "LTLB"}
+options_for_research = {"1": "Control", "2": "LTLB", "3": "None"}
 while True:
     academic_year = input(
-        "Which academic year (e.g. 21/22) are you interested in? Note that you can only select ONE academic year:"
+        "Which academic year (e.g. 21/22) are you interested in? Note that you can only select ONE academic year. If you do not wish to indicate an academic year, answer 'none' without quotations:"
     )
-    if not re.match(r"\d{2}/\d{2}", academic_year):
+    if academic_year.casefold() == "none":
+        print("No Academic Year is set!")
+        break
+    elif not re.match(r"\d{2}/\d{2}", academic_year):
         print("ERROR: Sorry, input must be in the format XX/XX, where X is an integer")
     else:
         break
 while True:
     trimester = input(
-        "Which Trimester (1,2, or 3) are you interested in? Note that you can only input ONE Trimester:"
+        "Which Trimester (1,2, or 3) are you interested in? Note that you can only input ONE Trimester. If you do not wish to indicate a Trimester, answer 'none' with quotations:"
     )
-    if not re.match(r"\b[1-3]\b", trimester):
+    if trimester.casefold() == "none":
+        print("No trimester is set!")
+        break
+    elif not re.match(r"\b[1-3]\b", trimester):
         print("ERROR: Please input an integer between 1-3.")
     else:
         break
@@ -59,10 +65,13 @@ while True:
     which_arm = input(
         """Which research arm are you interested in?
     1) Control
-    2) LTLB\n
-    Select only the corresponding (e.g. 1):"""
+    2) LTLB
+    3) None\n
+    Select only the corresponding options(e.g. 1):"""
     )
-    if not re.match(r"\b[1-2]\b", which_arm):
+    if which_arm == "3":
+        print("No research arm is selected!")
+    elif not re.match(r"\b[1-2]\b", which_arm):
         print(
             "ERROR: Please key in the correct integer corresponding to the research arm (e.g. 1, or 2):"
         )
@@ -70,11 +79,17 @@ while True:
         break
 
 
-nom_roll = nom_roll.loc[
-    (nom_roll["AY"] == academic_year)
-    & (nom_roll["Trimester (1/2/3)"] == float(trimester))
-    & (nom_roll["Arm (LTLB/ Control)"] == options_for_research[which_arm])
-]
+if which_arm != "3":
+    nom_roll = nom_roll.loc[
+        (nom_roll["Arm (LTLB/ Control)"] == options_for_research[which_arm])
+    ]
+
+if academic_year.casefold() != "none" and trimester.casefold() != "none":
+    nom_roll = nom_roll.loc[
+        (nom_roll["AY"] == academic_year)
+        & (nom_roll["Trimester (1/2/3)"] == float(trimester))
+        & (nom_roll["Arm (LTLB/ Control)"] == options_for_research[which_arm])
+    ]
 subject_code_and_identity = nom_roll[["ACT Subject Code", "Name"]]
 subject_code_and_identity.reset_index(drop=True, inplace=True)
 
