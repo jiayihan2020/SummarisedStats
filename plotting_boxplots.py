@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
 import os
-import matplotlib.ticker as mticker
 
 
 working_directory = Path("Combining the median")
