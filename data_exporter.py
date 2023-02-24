@@ -78,7 +78,7 @@ while True:
     else:
         break
 
-
+# isolate the data based on the user's inputs.
 if which_arm != "3":
     nom_roll = nom_roll.loc[
         (nom_roll["Arm (LTLB/ Control)"] == options_for_research[which_arm])
@@ -96,7 +96,9 @@ subject_code_and_identity.reset_index(drop=True, inplace=True)
 subject_code_identity = subject_code_and_identity.set_index("ACT Subject Code")[
     "Name"
 ].to_dict()
+# --- If there is someone who is changing their watch ---
 
+# Check to see if there are students who have changed their watches. If so, identify and isolate their subject IDs
 people_who_changed_watch = {k: v for k, v in subject_code_identity.items() if "&" in k}
 if people_who_changed_watch:
     omitted_file = []
@@ -104,10 +106,13 @@ if people_who_changed_watch:
     for person_code in people_who_changed_watch:
         individual_codes = person_code.split("&")
         individual_codes_no_space = [s.strip() for s in individual_codes]
+        # Iterate through the list and identify the csv files of the student who has changed their watches.
         for individual_code in individual_codes_no_space:
             file_name = glob.glob(f"{individual_code}*.*")[0]
             file_of_interest.append(file_name)
+            # Add the filename into the ommited file list so that we do not process their data when we are handling those who did not change their watches.
             omitted_file.append(file_name)
+        # Call upon the combined stats function to combine the dataframes of the student who has changed their watches and obtained their summarised stats so that their data will be more representative.
         data_summarised = data_summariser.combined_stats(file_of_interest)
         data_summarised.reset_index(inplace=True)
         data_summarised = data_summarised.rename(
@@ -124,6 +129,7 @@ if people_who_changed_watch:
         )
         file_of_interest = []
     for raw_data in os.listdir():
+        # Proceed with coming up with the summarised stats for those who did not change their watches.
         if raw_data.endswith(".csv") and raw_data not in omitted_file:
             person_code = raw_data.split("_")[0]
             data_summarised = data_summariser.combined_stats([raw_data])
@@ -140,8 +146,9 @@ if people_who_changed_watch:
                 index=False,
                 header=True,
             )
+#  --- If there is no one changing their watch ---
 
-
+# If there is no one changing the watch, then proceed to generate the summarised stats.
 else:
     for raw_data in os.listdir():
         if raw_data.endswith(".csv"):
