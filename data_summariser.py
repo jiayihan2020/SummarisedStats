@@ -149,16 +149,19 @@ def combined_stats(filenames):
     sleeping_df = obtaining_sleep_dataframe(filenames)
     resting_df.reset_index(drop=True, inplace=True)
     sleeping_df.reset_index(drop=True, inplace=True)
+    # Combining the resting_df and sleeping_df into a single dataframe
 
     new_df = pd.concat([resting_df, sleeping_df], axis=1)
-
+    # The list contains the variables which should be changed to numeric format rather than string format.
     column_to_change = [
         "Onset Latency (minutes)",
         "Sleep Efficiency (percent)",
         "WASO (minutes)",
     ]
+    # Converting the relevant column to datetime objects.
 
     new_df["Get Up Time"] = pd.to_datetime(new_df["Get Up Time"])
+    # For the Total Sleep Time column, if there is an NA cell, refer to the corresponding cell in the Bed Time column. If that cell in the Bed Time column is not null, then fill the NA cell with 0, else leave it as it is.
     new_df["Total Sleep Time (hours)"] = np.where(
         (new_df["Bed Time"].notnull()) & (new_df["Total Sleep Time (hours)"].isna()),
         0,
@@ -170,13 +173,14 @@ def combined_stats(filenames):
     new_df["Total Sleep Time (hours)"] = pd.to_datetime(
         new_df["Total Sleep Time (hours)"], unit="m"
     )
+    # Changing the pm to am and vice versa in the Bed Time column so that Python will be able to order the Bed Time correctly
     new_df["Bed Time"] = new_df["Bed Time"].str.replace("pm", "AM")
     new_df["Bed Time"] = new_df["Bed Time"].str.replace("am", "PM")
 
     new_df["Bed Time"] = pd.to_datetime(new_df["Bed Time"])
-
+    # Change type of data in the column_to_change from string to numeric. Numeric includes float.
     new_df[column_to_change] = new_df[column_to_change].apply(pd.to_numeric)
-
+    # If there is an NA cell in Onset Latency, check the corresponding cell in the Bed Time column. If that cell is not NA, then replace NA with 0 in the Onset Latency cell.
     new_df["Onset Latency (minutes)"] = np.where(
         (new_df["Bed Time"].notna()) & (new_df["Onset Latency (minutes)"].isna()),
         0,
@@ -203,13 +207,13 @@ def combined_stats(filenames):
         0,
         new_df["#Awake"],
     )
-
+    # The describe function gathers the summarised stats of the dataframe. This includes the mean, median, and their percentile. Datetime_is_numeric enables us to obtain these stats for datetime objects.
     summary_stats = new_df.describe(datetime_is_numeric=True)
-
+    # Changing the data format to string.
     summary_stats["Bed Time"] = pd.to_datetime(
         summary_stats["Bed Time"], errors="coerce"
     ).dt.strftime("%I:%M:%S %p")
-
+    # Replacing the AM back to PM and vice versa so that the summarised stats make more sense
     summary_stats["Bed Time"] = summary_stats["Bed Time"].str.replace("AM", "pm")
     summary_stats["Bed Time"] = summary_stats["Bed Time"].str.replace("PM", "am")
     summary_stats["Bed Time"] = summary_stats["Bed Time"].str.replace("am", "AM")
