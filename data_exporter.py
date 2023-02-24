@@ -36,7 +36,7 @@ if not os.path.isdir(os.path.join(os.getcwd(), output_directory)):
     )
     os.mkdir(os.path.join(os.getcwd(), "formatted data"))
     print("Folder successfully created!")
-
+#  Obtaining the nominal roll of students from the Participants's Manifest. This will then isolate data based on the academic year, trimester, and research groups based on user's input.
 nom_roll = data_summariser.obtaining_person_identity(location_of_manifest)
 options_for_research = {"1": "Control", "2": "LTLB", "3": "None"}
 while True:
