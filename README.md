@@ -2,7 +2,7 @@
 
 ## Introduction
 
-SummarisedStats generates the summarised statistics (e.g. Median, Min, Max, and Percentiles) for the sleep statistics of the participants who took part in the Actigraphy activity. SummarisedStats will also plot the boxplot of various sleep variables (e.g. Sleep Efficiency) so the research team can analyse the difference in sleep patterns between the control and the intervention groups.
+SummarisedStats generates the summarised statistics (e.g. Median, Min, Max, and Percentiles) for the sleep statistics of the participants who took part in the Actigraphy activity. SummarisedStats will also plot the boxplot of various sleep variables (e.g. Sleep Efficiency) so that the research team can analyse the difference in sleep patterns between the control and the intervention groups.
 
 ## Functions of each scripts
 
