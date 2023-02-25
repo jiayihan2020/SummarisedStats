@@ -37,7 +37,7 @@ Please ensure that you have the following software installed on your computer:
 - `send2trash` module installed
   - You may enter the following command in the Command Prompt/Powershell/terminal:
   ```pip install -U send2trash```
-<br/>
+  <br/>
 - `seaborn` and `plotly` modules installed
   - You may enter the following command in the Command Prompt/Powershell/terminal:
  ```pip install -U seaborn plotly```
@@ -71,7 +71,7 @@ The consolidated excel file containing all the summarised stats will be generate
 
 Once the `Consolidated stats.xlsx` has been generated, isolate the median for each research participants into another excel workbook. Make sure you have a header for each column of the data. For best results, you can copy the headers from `Consolidated stats.xlsx`. You should format the excel data as shown below:
 
-<img src= 'https://github.com/jiayihan2020/SummarisedStats/blob/bd19b75b60efef326b09417439aa02cfdfb057b9/img/Median%20consolidation%20examples.png'>
+<img src= 'img/Median consolidation examples.png'>
 
 Simply run the script using your IDE and the boxplot for each of the variables will be generated. Note that by default, the script will generate both png file and html file. The former is created using the seaborn package while the latter is generated using the plotly package. For this script, the html file should only be used as a reference to check the validity of the boxplot that was generated as a png format.
 
