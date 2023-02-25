@@ -13,10 +13,8 @@ date_format = "%d/%m/%Y"
 
 def obtaining_person_identity(manifest_location):
     """Going through the manifest and then obtain the relevant information
-
     Args:
         manifest_location (str): The absolute filepath for the manifest.
-
     Returns:
         Dict: The subject code of the person together with the corresponding student's identity.
     """
@@ -140,9 +138,7 @@ def obtaining_sleep_dataframe(filenames):
 
 def combined_stats(filenames):
     """Combine the dataframe from the preceding functions and try to get the summarised statistics
-
     Input: CSV file names in list format
-
     Return: pandas dataframe containing the summarised data"""
 
     resting_df = obtaining_rest_dataframe(filenames)
