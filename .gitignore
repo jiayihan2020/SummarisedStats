@@ -3,5 +3,10 @@ formatted data/
 .vscode
 *pycache*
 *.html
+<<<<<<< HEAD
 Combining the median/
 
+=======
+
+Combining the median/
+>>>>>>> editing_readme
