@@ -159,7 +159,7 @@ for timing in df_control_timing.columns:
     plotly_timing = px.box(concat_df)
     print(f"Generating boxplot for {timing} using plotly...")
     plotly_timing.write_html(f"{timing}.html")
-# This section aims to provide the summarise stats that are found in the boxplots in table format. This will then be exported later in the script
+# --- This section aims to provide the summarise stats that are found in the boxplots in table format. This will then be exported later in the script ---
 df_control_summarised_timing = df_control_timing.describe()
 df_control_summarised_timing["Bed Time"] = pd.to_datetime(
     df_control_summarised_timing["Bed Time (unix)"], unit="s"
@@ -168,14 +168,14 @@ df_control_summarised_timing["Bed Time"] = pd.to_datetime(
 df_control_summarised_timing["Bed Time"] = df_control_summarised_timing[
     "Bed Time"
 ].dt.strftime("%I:%M:%S %p")
-
+# Chaning AM to PM and vice versa to provide a more accurate interpretation of the data for Bed Time.
 df_control_summarised_timing["Bed Time"] = df_control_summarised_timing[
     "Bed Time"
 ].str.replace("AM", "pm")
 df_control_summarised_timing["Bed Time"] = df_control_summarised_timing[
     "Bed Time"
 ].str.replace("PM", "am")
-
+# Convert Unix timing back to human readable timing
 df_control_summarised_timing["Get Up Time"] = pd.to_datetime(
     df_control_summarised_timing["Get Up Time (unix)"], unit="s"
 )
@@ -183,7 +183,7 @@ df_control_summarised_timing["Get Up Time"] = pd.to_datetime(
 df_control_summarised_timing["Get Up Time"] = df_control_summarised_timing[
     "Get Up Time"
 ].dt.strftime("%I:%M:%S %p")
-
+#
 df_ltlb_summarised_timing = df_ltlb_timing.describe()
 df_ltlb_summarised_timing["Bed Time"] = pd.to_datetime(
     df_ltlb_summarised_timing["Bed Time (unix)"], unit="s"
@@ -198,7 +198,7 @@ df_ltlb_summarised_timing["Bed Time"] = df_ltlb_summarised_timing[
 df_ltlb_summarised_timing["Get Up Time"] = df_ltlb_summarised_timing[
     "Get Up Time"
 ].dt.strftime("%I:%M:%S %p")
-
+# For Bed Time variable, switch PM to AM and vice versa to produce a more correct interpretation of the data
 df_ltlb_summarised_timing["Bed Time"] = df_ltlb_summarised_timing[
     "Bed Time"
 ].str.replace("AM", "pm")
