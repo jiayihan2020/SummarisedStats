@@ -6,11 +6,15 @@ from pathlib import Path
 import os
 
 
-working_directory = Path("Combining the median")
+working_directory = Path("For plotting graph")
 os.chdir(working_directory)
 
-df_control_group = pd.read_excel("List of Median Values for Control group.xlsx")
-df_ltlb_group = pd.read_excel("List of Median Values for LTLB group.xlsx")
+df_control_group = pd.read_excel(
+    "Median values for Control AY 2021 to AY2022 Tri 2 and 3.xlsx"
+)
+df_ltlb_group = pd.read_excel(
+    "Median values for LTLB AY2021 to AY2022 Tri 2 and 3.xlsx"
+)
 
 
 # --- Dealing with the difficult case of handling datetime objects ---
@@ -111,8 +115,9 @@ df_ltlb_timing = df_ltlb_timing.drop(
 
 # Iterate through the columns of one of the dataframes (since column heading are the same for control and LTLB groups)
 for timing in df_control_timing.columns:
+
     figure = plt.figure()
-    # Concatentate two series from Control and LTLB groups together as one Dataframe so that we can plot two boxplots in one chart.
+    # Concatenate two series from Control and LTLB groups together as one Dataframe so that we can plot two boxplots in one chart.
     concat_df = pd.DataFrame(
         {
             "Control Group": df_control_timing[timing],
@@ -120,9 +125,10 @@ for timing in df_control_timing.columns:
         }
     )
 
+    # sns.set(rc={"figure.figsize": (11.7, 8.3)})
+
     box_plot = sns.boxplot(data=concat_df, palette="flare")
 
-    sns.set(rc={"figure.figsize": (11.37, 8.27)})
     # This gets the current axes of the graphs
     ax = plt.gca()
     y_axis = ax.get_yticks()
@@ -132,17 +138,23 @@ for timing in df_control_timing.columns:
         ax.set_yticklabels(
             [pd.to_datetime(tm, unit="s").strftime("%I:%M:%S %p") for tm in y_axis]
         )
+        box_plot.set_xlabel("Research Group")
         if timing == "Bed Time (unix)":
-            plt.ylabel("Bed Time")
+            box_plot.set_ylabel("Bed Time")
         else:
-            plt.ylabel("Get Up Time")
+            box_plot.set_ylabel("Get Up Time")
+
     else:
         ax.set_yticklabels([pd.to_timedelta(a, unit="h") for a in y_axis])
-        plt.ylabel(f"{timing}")
-    plt.xlabel("Research groups")
+        box_plot.set_xlabel("Research Group")
+        if timing == "#Awake":
+            box_plot.set_ylabel("Number of Awakes")
+        else:
+            box_plot.set_ylabel(f"{timing}")
 
     print(f"Generating boxplot for {timing} using seaborn...")
-    figure.savefig(f"{timing}.png", format="png")
+
+    figure.savefig(f"{timing}.png", format="png", bbox_inches="tight")
     # This part plots the boxplot using plotly so that there is something to cross check and ensure the validity of the boxplot.
     plotly_timing = px.box(concat_df)
     print(f"Generating boxplot for {timing} using plotly...")
@@ -224,9 +236,11 @@ for column in df_just_numbers_control.columns:
         }
     )
     fig = plt.figure()
-    sns.boxplot(data=combined_dfs, palette="flare")
+    boxy = sns.boxplot(data=combined_dfs, palette="flare")
+    boxy.set_xlabel("Research Group")
+    boxy.set_ylabel(f"{column}")
     print(f"Generating box plot for {column} using matplotlib....")
-    fig.savefig(f"{column}.png", format="png")
+    fig.savefig(f"{column}.png", format="png", bbox_inches="tight")
     figure_plotly = px.box(combined_dfs)
     print(f"Generating boxplot for {column} using plotly...")
     figure_plotly.write_html(f"{column}.html")
