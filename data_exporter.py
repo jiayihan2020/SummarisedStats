@@ -21,11 +21,11 @@ except ModuleNotFoundError:
 
 
 # --- User Input ---
-working_directory = "./Actigraphy new csv"
+working_directory = "./LTLB Group"
 
 output_directory = "formatted data/"
 
-location_of_manifest = "D:/OneDrive - Singapore Institute Of Technology/LTLB/Research/3. Data/Participant Manifest - with AY 22-23 Tri 1 LTLB arm.xlsx"
+location_of_manifest = "Z:/Participant Manifest updated.xlsx"
 
 # --------------------
 
