@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from pathlib import Path
 import sys
 
 try:
@@ -22,14 +23,13 @@ except ModuleNotFoundError:
 
 # --- user input ---
 
-working_directory = r"./LTLB data/formatted data/"
+working_directory = Path(r"./LTLB Group/formatted data")
 # --------------------
 
 
 def consolidating_excel_files():
     """Consolidate all the excel files containing the summary stats into one excel file."""
 
-    os.chdir(working_directory)
     count_file = 0
 
     for _ in os.listdir():
@@ -70,4 +70,29 @@ def consolidating_excel_files():
         )
 
 
+def consolidating_median_stats():
+    """Obtain all the median from the summarised stats excel file"""
+
+    data_to_concat = []
+    for file in working_directory.glob("*.xlsx"):
+        print(f"Extracting the median value from the {file.name}...")
+        df = pd.read_excel(file)
+        try:
+            df = df.iloc[4, 1:]
+        except IndexError:
+            continue
+        else:
+            data_to_concat.append(df)
+    data_with_all_median = pd.DataFrame(data_to_concat)
+    data_with_all_median = data_with_all_median.dropna(how="all")
+    name_of_parent_folder = f"{working_directory.parent}"
+    os.chdir(working_directory)
+    data_with_all_median.to_excel(
+        f"{name_of_parent_folder} Consolidated Median Value.xlsx",
+        index=False,
+        header=True,
+    )
+
+
+consolidating_median_stats()
 consolidating_excel_files()
