@@ -23,7 +23,7 @@ except ModuleNotFoundError:
 
 # --- user input ---
 
-working_directory = Path(r"./LTLB Group/formatted data")
+working_directory = Path(r"LTLB Group/formatted data")
 # --------------------
 
 
