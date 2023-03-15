@@ -31,6 +31,7 @@ def consolidating_excel_files():
     """Consolidate all the excel files containing the summary stats into one excel file."""
 
     count_file = 0
+    os.chdir(working_directory)
 
     for _ in os.listdir():
         if _.endswith(".xlsx"):
@@ -86,9 +87,8 @@ def consolidating_median_stats():
     data_with_all_median = pd.DataFrame(data_to_concat)
     data_with_all_median = data_with_all_median.dropna(how="all")
     name_of_parent_folder = f"{working_directory.parent}"
-    os.chdir(working_directory)
     data_with_all_median.to_excel(
-        f"{name_of_parent_folder} Consolidated Median Value.xlsx",
+        f"{name_of_parent_folder}/ Consolidated Median Value.xlsx",
         index=False,
         header=True,
     )
