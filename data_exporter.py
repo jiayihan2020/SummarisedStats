@@ -70,6 +70,9 @@ if (academic_year == "22/23" and trimester == 2) or (
             "WARNING: Your data may include those from AY22/23 Tri 2. For this batch of data, there is a subtle difference in how the 'AM/PM' is written compared to the other data. This will affect how the bed time statistics is calculated. Please ensure you do the necessary adjustments before carrying on with the analysis. Do you still want to continue? (Y/N): "
         )
         if user_warning.casefold() == "y" or user_warning.casefold() == "yes":
+            print(
+                "The script will continue to run as per normal. Please do check the output of the xlsx files with those from the Clinician Report to ensure the accuracy of the statistics."
+            )
             break
         elif user_warning.casefold() == "n" or user_warning.casefold() == "no":
             sys.exit(
