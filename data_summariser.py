@@ -170,8 +170,8 @@ def combined_stats(filenames):
         new_df["Total Sleep Time (hours)"], unit="m"
     )
     # Changing the pm to am and vice versa in the Bed Time column so that Python will be able to order the Bed Time correctly
-    new_df["Bed Time"] = new_df["Bed Time"].str.replace("pm", "AM")
-    new_df["Bed Time"] = new_df["Bed Time"].str.replace("am", "PM")
+    new_df["Bed Time"] = new_df["Bed Time"].str.replace("PM", "am")
+    new_df["Bed Time"] = new_df["Bed Time"].str.replace("AM", "pm")
 
     new_df["Bed Time"] = pd.to_datetime(new_df["Bed Time"])
     # Change type of data in the column_to_change from string to numeric. Numeric includes float.
@@ -210,10 +210,8 @@ def combined_stats(filenames):
         summary_stats["Bed Time"], errors="coerce"
     ).dt.strftime("%I:%M:%S %p")
     # Replacing the AM back to PM and vice versa so that the summarised stats make more sense
-    summary_stats["Bed Time"] = summary_stats["Bed Time"].str.replace("AM", "pm")
-    summary_stats["Bed Time"] = summary_stats["Bed Time"].str.replace("PM", "am")
-    summary_stats["Bed Time"] = summary_stats["Bed Time"].str.replace("am", "AM")
-    summary_stats["Bed Time"] = summary_stats["Bed Time"].str.replace("pm", "PM")
+    summary_stats["Bed Time"] = summary_stats["Bed Time"].str.replace("am", "PM")
+    summary_stats["Bed Time"] = summary_stats["Bed Time"].str.replace("pm", "AM")
 
     summary_stats["Get Up Time"] = pd.to_datetime(
         summary_stats["Get Up Time"], errors="coerce"
