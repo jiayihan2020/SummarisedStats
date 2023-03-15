@@ -211,8 +211,9 @@ def combined_stats(filenames):
         summary_stats["Bed Time"], errors="coerce"
     ).dt.strftime("%I:%M:%S %p")
     # Replacing the AM back to PM and vice versa so that the summarised stats make more sense
-    summary_stats["Bed Time"] = summary_stats["Bed Time"].str.replace("am", "PM")
-    summary_stats["Bed Time"] = summary_stats["Bed Time"].str.replace("pm", "AM")
+    summary_stats["Bed Time"] = summary_stats["Bed Time"].str.replace("AM", "pm")
+    summary_stats["Bed Time"] = summary_stats["Bed Time"].str.replace("PM", "am")
+    summary_stats["Bed Time"] = summary_stats["Bed Time"].str.capitalize()
 
     summary_stats["Get Up Time"] = pd.to_datetime(
         summary_stats["Get Up Time"], errors="coerce"
