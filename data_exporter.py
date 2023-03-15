@@ -62,26 +62,6 @@ while True:
     else:
         break
 
-if (academic_year == "22/23" and trimester == 2) or (
-    academic_year == "none" and trimester.casefold() == "none"
-):
-    while True:
-        user_warning = input(
-            "WARNING: Your data may include those from AY22/23 Tri 2. For this batch of data, there is a subtle difference in how the 'AM/PM' is written compared to the other data. This will affect how the bed time statistics is calculated. Please ensure you do the necessary adjustments before carrying on with the analysis. Do you still want to continue? (Y/N): "
-        )
-        if user_warning.casefold() == "y" or user_warning.casefold() == "yes":
-            print(
-                "The script will continue to run as per normal. Please do check the output of the xlsx files with those from the Clinician Report to ensure the accuracy of the statistics."
-            )
-            break
-        elif user_warning.casefold() == "n" or user_warning.casefold() == "no":
-            sys.exit(
-                "This python script has been terminated. Please run the script again after necessary adjustments have been made."
-            )
-        else:
-            print(
-                "ERROR: Invalid input! Please key in the correct input as shown in the previous prompt!"
-            )
 while True:
     which_arm = input(
         """Which research arm are you interested in?
