@@ -21,7 +21,7 @@ except ModuleNotFoundError:
 
 
 # --- User Input ---
-working_directory = "LTLB Group"
+working_directory = "Control Group"
 
 output_directory = "formatted data/"
 
@@ -109,25 +109,32 @@ if people_who_changed_watch:
         individual_codes_no_space = [s.strip() for s in individual_codes]
         # Iterate through the list and identify the csv files of the student who has changed their watches.
         for individual_code in individual_codes_no_space:
-            file_name = glob.glob(f"{individual_code}*.*")[0]
-            file_of_interest.append(file_name)
-            # Add the filename into the ommited file list so that we do not process their data when we are handling those who did not change their watches.
-            omitted_file.append(file_name)
-        # Call upon the combined stats function to combine the dataframes of the student who has changed their watches and obtained their summarised stats so that their data will be more representative.
-        data_summarised = data_summariser.combined_stats(file_of_interest)
-        data_summarised.reset_index(inplace=True)
-        data_summarised = data_summarised.rename(
-            columns={
-                "index": f"{person_code} - {people_who_changed_watch[person_code]}"
-            }
-        )
-        data_summarised.to_excel(
-            os.path.join(
-                os.getcwd(), output_directory, f"{person_code} summarised_data.xlsx"
-            ),
-            index=False,
-            header=True,
-        )
+            try:
+                file_name = glob.glob(f"{individual_code}*.*")[0]
+            except IndexError:
+                continue
+            else:
+
+                file_of_interest.append(file_name)
+                # Add the filename into the ommited file list so that we do not process their data when we are handling those who did not change their watches.
+                omitted_file.append(file_name)
+                # Call upon the combined stats function to combine the dataframes of the student who has changed their watches and obtained their summarised stats so that their data will be more representative.
+                data_summarised = data_summariser.combined_stats(file_of_interest)
+                data_summarised.reset_index(inplace=True)
+                data_summarised = data_summarised.rename(
+                    columns={
+                        "index": f"{person_code} - {people_who_changed_watch[person_code]}"
+                    }
+                )
+                data_summarised.to_excel(
+                    os.path.join(
+                        os.getcwd(),
+                        output_directory,
+                        f"{person_code} summarised_data.xlsx",
+                    ),
+                    index=False,
+                    header=True,
+                )
         file_of_interest = []
     for raw_data in os.listdir():
         # Proceed with coming up with the summarised stats for those who did not change their watches.
