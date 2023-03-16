@@ -23,7 +23,7 @@ except ModuleNotFoundError:
 
 # --- user input ---
 
-working_directory = Path(r"LTLB Group/formatted data")
+working_directory = Path(r"Control Group/formatted data")
 # --------------------
 
 
@@ -88,7 +88,7 @@ def consolidating_median_stats():
     data_with_all_median = data_with_all_median.dropna(how="all")
     name_of_parent_folder = f"{working_directory.parent}"
     data_with_all_median.to_excel(
-        f"{name_of_parent_folder}/ Consolidated Median Value.xlsx",
+        f"{working_directory}/ Consolidated Median Value.xlsx",
         index=False,
         header=True,
     )
