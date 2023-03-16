@@ -86,7 +86,7 @@ def consolidating_median_stats():
             data_to_concat.append(df)
     data_with_all_median = pd.DataFrame(data_to_concat)
     data_with_all_median = data_with_all_median.dropna(how="all")
-    name_of_parent_folder = f"{working_directory.parent}"
+
     data_with_all_median.to_excel(
         f"{working_directory}/ Consolidated Median Value.xlsx",
         index=False,
