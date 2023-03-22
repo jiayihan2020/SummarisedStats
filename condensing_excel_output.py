@@ -54,7 +54,9 @@ def consolidating_excel_files():
                 df = pd.read_excel(file)
                 data_file.append(df)
 
-        writer = pd.ExcelWriter("Consolidated stats.xlsx", engine="xlsxwriter")
+        writer = pd.ExcelWriter(
+            f"{working_directory}/Consolidated stats.xlsx", engine="xlsxwriter"
+        )
         for data in data_file:
             data.to_excel(writer, sheet_name="Results", startrow=row_number)
             row_number += 10
