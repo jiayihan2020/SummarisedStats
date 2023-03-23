@@ -91,6 +91,9 @@ if academic_year.casefold() != "none" and trimester.casefold() != "none":
         & (nom_roll["Trimester (1/2/3)"] == float(trimester))
         & (nom_roll["Arm (LTLB/ Control)"] == options_for_research[which_arm])
     ]
+    # --- Uncomment this line if you wish to filter out those who have consented to the study.Remove "nom_roll['Consent (Y/N)'] == 'Y'.casefold()) |" if you want to focus only on '2Y' ---
+
+    # nom_roll = nom_roll.loc[(nom_roll['Consent (Y/N)'] == 'Y'.casefold()) | (nom_roll.loc['Consent (Y/N)' == '2Y'.casefold()])]
 subject_code_and_identity = nom_roll[["ACT Subject Code", "Name"]]
 subject_code_and_identity.reset_index(drop=True, inplace=True)
 
