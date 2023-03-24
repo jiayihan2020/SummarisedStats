@@ -99,7 +99,9 @@ def consolidating_median_stats():
 
 
 while True:
-    user_input = "Do you which to check and remove the data of the person who has withdrawn/not consented to the research? (Y/N):"
+    user_input = input(
+        "Do you which to check and remove the data of the person who has withdrawn/not consented to the research? (Y/N):"
+    )
     if user_input == "Y".casefold() or user_input == "yes".casefold():
         rut.remove_non_consented_people()
         break
