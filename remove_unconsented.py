@@ -32,9 +32,11 @@ def remove_non_consented_people():
             non_consented_students.append(subject_id)
             send2trash.send2trash(i)
 
-    print(
-        "The following subject code did not indicate that they consented to the research, their files have been sent to the recyling bin:"
-    )
+    if non_consented_students:
 
-    for non_consent in non_consented_students:
-        print(non_consent)
+        print(
+            "The following subject code did not indicate that they consented to the research, their files have been sent to the recyling bin:"
+        )
+
+        for non_consent in non_consented_students:
+            print(non_consent)
