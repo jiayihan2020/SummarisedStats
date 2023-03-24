@@ -2,6 +2,8 @@ import pandas as pd
 import os
 from pathlib import Path
 import sys
+import remove_unconsented as rut
+import warnings
 
 try:
     import xlsxwriter
@@ -94,6 +96,20 @@ def consolidating_median_stats():
         index=False,
         header=True,
     )
+
+
+while True:
+    user_input = "Do you which to check and remove the data of the person who has withdrawn/not consented to the research? (Y/N):"
+    if user_input == "Y".casefold() or user_input == "yes".casefold():
+        rut.remove_non_consented_people()
+        break
+    elif user_input == "N".casefold() or user_input == "no".casefold():
+        warnings.warn(
+            message="Those who have withdrawn/not consented to the research will be included in the data analysis."
+        )
+        break
+    else:
+        print("ERROR: Could not recognise the input. Please try again!")
 
 
 consolidating_median_stats()
