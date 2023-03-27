@@ -92,7 +92,7 @@ def consolidating_median_stats():
     data_with_all_median = data_with_all_median.dropna(how="all")
 
     data_with_all_median.to_excel(
-        f"{working_directory}/ Consolidated Median Value.xlsx",
+        f"{working_directory}/Consolidated Median Value.xlsx",
         index=False,
         header=True,
     )
