@@ -32,14 +32,14 @@ df_control_timing = df_control_timing.assign(
         y.seconds / (60.0 * 60.0)
         for y in df_control_timing["Total Time in Bed (hours)"]
     ]
-)
+).round(3)
 
 df_control_timing = df_control_timing.assign(
     Total_Sleep_Time_hours=[
         (x.seconds) / (60.0 * 60.0)
         for x in df_control_timing["Total Sleep Time (hours)"]
     ]
-)
+).round(3)
 
 # Converting AM to pm and vice versa for the Bed Time so that python sorts bedtime correctly
 df_control_timing["Bed Time"] = df_control_timing["Bed Time"].str.replace("AM", "pm")
@@ -82,13 +82,13 @@ df_ltlb_timing = df_ltlb_timing.assign(
     Total_Time_in_Bed_hours=[
         a.seconds / (60.0 * 60.0) for a in df_ltlb_timing["Total Time in Bed (hours)"]
     ]
-)
+).round(3)
 
 df_ltlb_timing = df_ltlb_timing.assign(
     Total_Sleep_Time_hours=[
         (b.seconds) / (60.0 * 60.0) for b in df_ltlb_timing["Total Sleep Time (hours)"]
     ]
-)
+).round(3)
 # Converting the Bed Time and Get up Time to datetime objects
 df_ltlb_timing[cols_to_change_to_dt] = df_ltlb_timing[cols_to_change_to_dt].apply(
     pd.to_datetime
@@ -245,8 +245,8 @@ for column in df_just_numbers_control.columns:
     print(f"Generating boxplot for {column} using plotly...")
     figure_plotly.write_html(f"{column}.html")
 print("All plots have been generated successfully!")
-summarised_stats_control = df_just_numbers_control.describe()
-summarised_stats_ltlb = df_just_numbers_ltlb.describe()
+summarised_stats_control = df_just_numbers_control.describe().round(3)
+summarised_stats_ltlb = df_just_numbers_ltlb.describe().round(3)
 print("Generating the summarised stats as an Excel file...")
 
 #  This section will create a table containing key stats that are found in the boxplots so that we can check the validity of the boxplot stats.
